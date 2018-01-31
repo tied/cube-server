@@ -1,0 +1,60 @@
+<html>
+<head>
+    <title>Mondrian Server Properties</title>
+    <meta name="decorator" content="atl.admin">
+    $webResourceManager.requireResourcesForContext("com.mesilat.cube")
+</head>
+<body>
+
+<div class="aui-tabs horizontal-tabs">
+    <ul class="tabs-menu">
+        <li class="menu-item active-tab">
+            <a href="#com-mesilat-cube-tab1">$i18n.getText("com.mesilat.cube.config.panel1")</a>
+        </li>
+        <li class="menu-item">
+            <a href="#com-mesilat-cube-tab2">$i18n.getText("com.mesilat.cube.config.panel2")</a>
+        </li>
+    </ul>
+
+
+    <div class="tabs-pane active-pane" id="com-mesilat-cube-tab1">
+        <p>$i18n.getText("com.mesilat.cube.config.text")</p>
+        <form id="cube-jdbc-settings" class="aui">
+            <div class="field-group">
+                <label for="url">$i18n.getText("com.mesilat.cube.config.url.label")<span class="aui-icon icon-required">(required)</span></label>
+                <input type="text" name="url" class="text"
+                    placeholder="$i18n.getText("com.mesilat.cube.config.url.placeholder")">
+            </div>
+            <div class="field-group">
+                <label for="username">$i18n.getText("com.mesilat.cube.config.username.label")<span class="aui-icon icon-required">(required)</span></label>
+                <input type="text" name="username" class="text"
+                    placeholder="$i18n.getText("com.mesilat.cube.config.username.placeholder")">
+            </div>
+            <div class="field-group">
+                <label for="password">$i18n.getText("com.mesilat.cube.config.password.label")<span class="aui-icon icon-required">(required)</span></label>
+                <input type="password" name="password" class="text"
+                    placeholder="$i18n.getText("com.mesilat.cube.config.password.placeholder")">
+            </div>
+            <div class="field-group">
+                <label for="driver">$i18n.getText("com.mesilat.cube.config.driver.label")<span class="aui-icon icon-required">(required)</span></label>
+                <input type="text" name="driver" class="text"
+                    placeholder="$i18n.getText("com.mesilat.cube.config.driver.placeholder")">
+            </div>
+
+            <div class="field-group">
+                <input type="submit" value="$i18n.getText("com.mesilat.cube.config.submit.label")" class="button">
+            </div>
+
+            <div class="aui-message" style="display:none;"></div>
+        </form>
+    </div>
+
+
+    <div class="tabs-pane" id="com-mesilat-cube-tab2">
+        <div id="mondrian-properties"/>
+    </div>
+
+
+</div>
+</body>
+</html>

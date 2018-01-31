@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<DataSources>
+    <DataSource>
+        <DataSourceName>Provider=Mondrian;DataSource=Jira;</DataSourceName>
+        <DataSourceDescription>JIRA Worklog</DataSourceDescription>
+        <URL>http://localhost:8080/mondrian/xmla</URL>
+        <!--DataSourceInfo>Provider=mondrian;Jdbc={0};JdbcUser={1};JdbcPassword={2};JdbcDrivers={3};Catalog=file:schemas/Jira.xml</DataSourceInfo-->
+        <DataSourceInfo>Provider=mondrian;Jdbc={0};JdbcUser={1};JdbcPassword={2};JdbcDrivers={3}</DataSourceInfo>
+        <ProviderName>Mondrian</ProviderName>
+        <ProviderType>MDP</ProviderType>
+        <AuthenticationMode>Unauthenticated</AuthenticationMode>
+        <Catalogs>
+            <Catalog name="Default">
+                <Definition>file:schemas/default.xml</Definition>
+            </Catalog>
+        </Catalogs>
+    </DataSource>
+</DataSources>

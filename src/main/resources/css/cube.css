@@ -1,0 +1,10 @@
+.com-mesilat-mondrian-property-name {
+    width: 300px;
+}
+.com-mesilat-mondrian-property-value {
+    width: 100%;
+}
+.com-mesilat-mondrian-property-remove {
+    cursor: pointer;
+    margin-left: 4px;
+}

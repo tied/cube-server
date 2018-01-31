@@ -1,0 +1,751 @@
+<Schema metamodelVersion='4.0' name='Cube Default'>
+    <PhysicalSchema>
+
+        <Query alias='ISSUES' keyColumn='id'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT
+ jiraissue.ID                                       as "id",
+ jiraissue.issuenum                                 as "issuenum",
+ project.pkey                                       as "projectkey",
+ CONCAT(project.pkey, '-', jiraissue.issuenum)      as "issuekey",
+ jiraissue.SUMMARY                                  as "summary",
+ jiraissue.ASSIGNEE                                 as "assignee",
+ jiraissue.REPORTER                                 as "reporter",
+ jiraissue.PROJECT                                  as "projectid",
+ CAST(jiraissue.CREATED as DATE)                    as "created",
+ CAST(jiraissue.UPDATED as DATE)                    as "updated",
+ CAST(jiraissue.DUEDATE as DATE)                    as "due",
+ CAST(jiraissue.RESOLUTIONDATE as DATE)             as "resolved",
+ COALESCE(jiraissue.issuetype,   '-1')              as "typeid",
+ COALESCE(jiraissue.issuestatus, '-1')              as "statusid",
+ COALESCE(jiraissue.PRIORITY,    '-1')              as "priorityid",
+ COALESCE(jiraissue.RESOLUTION,  '-1')              as "resolutionid",
+ COALESCE(jiraissue.TIMEORIGINALESTIMATE, 0) / 3600 as "estimated",
+ COALESCE(jiraissue.TIMESPENT, 0) / 3600            as "timespent",
+ (COALESCE(jiraissue.TIMEESTIMATE, 0) - COALESCE(jiraissue.TIMESPENT, 0)) / 3600 as "remaining"
+FROM
+ jiraissue INNER JOIN project ON jiraissue.PROJECT = project.ID]]></SQL>
+                <SQL dialect='oracle'><![CDATA[SELECT
+ jiraissue.ID                                       as "id",
+ jiraissue.issuenum                                 as "issuenum",
+ project.pkey                                       as "projectkey",
+ project.pkey || '-' || jiraissue.issuenum          as "issuekey",
+ jiraissue.SUMMARY                                  as "summary",
+ jiraissue.ASSIGNEE                                 as "assignee",
+ jiraissue.REPORTER                                 as "reporter",
+ jiraissue.PROJECT                                  as "projectid",
+ TRUNC(CAST(jiraissue.CREATED as DATE))             as "created",
+ TRUNC(CAST(jiraissue.UPDATED as DATE))             as "updated",
+ TRUNC(CAST(jiraissue.DUEDATE as DATE))             as "due",
+ TRUNC(CAST(jiraissue.RESOLUTIONDATE as DATE))      as "resolved",
+ COALESCE(jiraissue.issuetype,   '-1')              as "typeid",
+ COALESCE(jiraissue.issuestatus, '-1')              as "statusid",
+ COALESCE(jiraissue.PRIORITY,    '-1')              as "priorityid",
+ COALESCE(jiraissue.RESOLUTION,  '-1')              as "resolutionid",
+ COALESCE(jiraissue.TIMEORIGINALESTIMATE, 0) / 3600 as "estimated",
+ COALESCE(jiraissue.TIMESPENT, 0) / 3600 as "timespent",
+ (COALESCE(jiraissue.TIMEESTIMATE, 0) - COALESCE(jiraissue.TIMESPENT, 0)) / 3600 as "remaining"
+FROM
+ jiraissue INNER JOIN project ON jiraissue.PROJECT = project.ID]]></SQL>
+                <SQL dialect='mssql'><![CDATA[
+SELECT
+ jiraissue.ID                                       as "id",
+ jiraissue.issuenum                                 as "issuenum",
+ project.pkey                                       as "projectkey",
+ CONCAT(project.pkey, '-', jiraissue.issuenum)      as "issuekey",
+ jiraissue.SUMMARY                                  as "summary",
+ jiraissue.ASSIGNEE                                 as "assignee",
+ jiraissue.REPORTER                                 as "reporter",
+ jiraissue.PROJECT                                  as "projectid",
+ CAST(jiraissue.CREATED as DATE)                    as "created",
+ CAST(jiraissue.UPDATED as DATE)                    as "updated",
+ CAST(jiraissue.DUEDATE as DATE)                    as "due",
+ CAST(jiraissue.RESOLUTIONDATE as DATE)             as "resolved",
+ COALESCE(jiraissue.issuetype,   '-1')              as "typeid",
+ COALESCE(jiraissue.issuestatus, '-1')              as "statusid",
+ COALESCE(jiraissue.PRIORITY,    '-1')              as "priorityid",
+ COALESCE(jiraissue.RESOLUTION,  '-1')              as "resolutionid",
+ COALESCE(jiraissue.TIMEORIGINALESTIMATE, 0) / 3600 as "estimated",
+ COALESCE(jiraissue.TIMESPENT, 0) / 3600            as "timespent",
+ (COALESCE(jiraissue.TIMEESTIMATE, 0) - COALESCE(jiraissue.TIMESPENT, 0)) / 3600 as "remaining"
+FROM
+ jira.jiraissue INNER JOIN jira.project ON jiraissue.PROJECT = project.ID]]></SQL>
+            </ExpressionView>
+        </Query>
+
+
+        <Query alias='PROJECTS' keyColumn='id'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT
+ project.ID as "id",
+ project.pkey as "projectkey",
+ project.pname as "name",
+ project.PROJECTTYPE as "projecttype"
+FROM project]]></SQL>
+                <SQL dialect='mssql'><![CDATA[
+SELECT
+ project.ID as "id",
+ project.pkey as "projectkey",
+ project.pname as "name",
+ project.PROJECTTYPE as "projecttype"
+FROM jira.project
+    ]]></SQL>
+            </ExpressionView>
+        </Query>
+
+
+        <Query alias='USERS' keyColumn='id'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT
+ cwd_user.ID as "id",
+ cwd_user.user_name as "username",
+ cwd_user.display_name as "displayname",
+ cwd_user.email_address as "email"
+FROM cwd_user]]></SQL>
+                <SQL dialect='mssql'><![CDATA[
+SELECT
+ cwd_user.ID as "id",
+ cwd_user.user_name as "username",
+ cwd_user.display_name as "displayname",
+ cwd_user.email_address as "email"
+FROM jira.cwd_user
+    ]]></SQL>
+            </ExpressionView>
+        </Query>
+
+
+        <Query alias='ISSUETYPES' keyColumn='id'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT
+ issuetype.ID as "id",
+ issuetype.pname as "name"
+FROM issuetype
+UNION
+ SELECT '-1', 'Undefined' FROM dual]]></SQL>
+                <SQL dialect='postgresql'><![CDATA[SELECT
+ issuetype.ID,
+ issuetype.pname as NAME
+FROM
+ issuetype
+UNION
+SELECT '-1', 'Undefined'
+    ]]></SQL>
+                <SQL dialect='mssql'><![CDATA[SELECT
+ issuetype.ID as "id",
+ issuetype.pname as "name"
+FROM
+ jira.issuetype
+UNION
+ SELECT '-1', 'Undefined'
+    ]]></SQL>
+            </ExpressionView>
+        </Query>
+
+
+        <Query alias='ISSUESTATUSES' keyColumn='id'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT
+ issuestatus.ID as "id",
+ issuestatus.pname as "name"
+FROM
+ issuestatus
+UNION SELECT '-1', 'Undefined' FROM dual
+    ]]></SQL>
+                <SQL dialect='postgresql'><![CDATA[SELECT
+ issuestatus.ID,
+ issuestatus.pname as NAME
+FROM
+ issuestatus
+UNION
+SELECT '-1', 'Undefined'
+    ]]></SQL>
+                <SQL dialect='mssql'><![CDATA[SELECT
+ issuestatus.ID as "id",
+ issuestatus.pname as "name"
+FROM
+ jira.issuestatus
+UNION
+SELECT '-1', 'Undefined'
+    ]]></SQL>
+            </ExpressionView>
+        </Query>
+
+
+        <Query alias='ISSUEPRIORITIES' keyColumn='id'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT
+ priority.ID as "id",
+ priority.pname as "name"
+FROM
+ priority
+UNION SELECT '-1', 'Undefined' FROM dual]]></SQL>
+                <SQL dialect='postgresql'><![CDATA[SELECT
+ priority.ID,
+ priority.pname as NAME
+FROM
+ priority
+UNION SELECT '-1', 'Undefined'
+    ]]></SQL>
+                <SQL dialect='mssql'><![CDATA[SELECT
+ priority.ID as "id",
+ priority.pname as "name"
+FROM
+ jira.priority
+UNION SELECT '-1', 'Undefined'
+    ]]></SQL>
+            </ExpressionView>
+        </Query>
+
+
+        <Query alias='ISSUERESOLUTIONS' keyColumn='id'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT
+ resolution.ID as "id",
+ resolution.pname as "name"
+FROM
+ resolution
+UNION SELECT '-1', 'Undefined' FROM dual]]></SQL>
+                <SQL dialect='postgresql'><![CDATA[SELECT
+ resolution.ID,
+ resolution.pname as NAME
+FROM
+ resolution
+UNION SELECT '-1', 'Undefined']]></SQL>
+                <SQL dialect='mssql'><![CDATA[SELECT
+ resolution.ID as "id",
+ resolution.pname as "name"
+FROM
+ jira.resolution
+UNION SELECT '-1', 'Undefined']]></SQL>
+            </ExpressionView>
+        </Query>
+
+
+        <Query alias='ISSUEDATES' keyColumn='issuedate'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT DISTINCT
+ CAST(CREATED as DATE)     as "issuedate",
+ TO_CHAR(CREATED,'YYYY')   as "year",
+ TO_CHAR(CREATED,'Mon')    as "month",
+ TO_CHAR(CREATED,'MM')     as "monthno",
+ TO_CHAR(CREATED,'Mon DD') as "day",
+ TO_CHAR(CREATED,'DD')     as "dayno"
+FROM jiraissue WHERE CREATED is NOT NULL
+UNION
+SELECT DISTINCT
+ CAST(UPDATED as DATE),
+ TO_CHAR(UPDATED,'YYYY'),
+ TO_CHAR(UPDATED,'Mon'),
+ TO_CHAR(UPDATED,'MM'),
+ TO_CHAR(UPDATED,'Mon DD'),
+ TO_CHAR(UPDATED,'DD')
+FROM jiraissue WHERE UPDATED is NOT NULL
+UNION
+SELECT DISTINCT
+ CAST(DUEDATE as DATE),
+ TO_CHAR(DUEDATE, 'YYYY'),
+ TO_CHAR(DUEDATE, 'Mon'),
+ TO_CHAR(DUEDATE, 'MM'),
+ TO_CHAR(DUEDATE, 'Mon DD'),
+ TO_CHAR(DUEDATE, 'DD')
+FROM jiraissue WHERE DUEDATE is NOT NULL
+UNION
+SELECT DISTINCT
+ CAST(RESOLUTIONDATE as DATE),
+ TO_CHAR(RESOLUTIONDATE, 'YYYY'),
+ TO_CHAR(RESOLUTIONDATE, 'Mon'),
+ TO_CHAR(RESOLUTIONDATE, 'MM'),
+ TO_CHAR(RESOLUTIONDATE, 'Mon DD'),
+ TO_CHAR(RESOLUTIONDATE, 'DD')
+FROM jiraissue WHERE RESOLUTIONDATE is NOT NULL
+    ]]></SQL>
+                <SQL dialect='mysql'><![CDATA[SELECT DISTINCT
+ DATE(CREATED)                as "issuedate",
+ DATE_FORMAT(CREATED,'%Y')    as "year",
+ DATE_FORMAT(CREATED,'%b')    as "month",
+ DATE_FORMAT(CREATED,'%c')    as "monthno",
+ DATE_FORMAT(CREATED,'%b %d') as "day",
+ DATE_FORMAT(CREATED,'%d')    as "dayno"
+FROM jiraissue WHERE CREATED is NOT NULL
+UNION
+SELECT DISTINCT
+ DATE(UPDATED),
+ DATE_FORMAT(UPDATED,'%Y'),
+ DATE_FORMAT(UPDATED,'%b'),
+ DATE_FORMAT(UPDATED,'%c'),
+ DATE_FORMAT(UPDATED,'%b %d'),
+ DATE_FORMAT(UPDATED,'%d')
+FROM jiraissue WHERE UPDATED is NOT NULL
+UNION
+SELECT DISTINCT
+ DATE(DUEDATE),
+ DATE_FORMAT(DUEDATE,'%Y'),
+ DATE_FORMAT(DUEDATE,'%b'),
+ DATE_FORMAT(DUEDATE,'%c'),
+ DATE_FORMAT(DUEDATE,'%b %d'),
+ DATE_FORMAT(DUEDATE,'%d')
+FROM jiraissue WHERE DUEDATE is NOT NULL
+UNION
+SELECT DISTINCT
+ DATE(RESOLUTIONDATE),
+ DATE_FORMAT(RESOLUTIONDATE,'%Y'),
+ DATE_FORMAT(RESOLUTIONDATE,'%b'),
+ DATE_FORMAT(RESOLUTIONDATE,'%c'),
+ DATE_FORMAT(RESOLUTIONDATE,'%b %d'),
+ DATE_FORMAT(RESOLUTIONDATE,'%d')
+FROM jiraissue WHERE RESOLUTIONDATE is NOT NULL
+    ]]></SQL>
+                <SQL dialect='oracle'><![CDATA[SELECT DISTINCT
+ TRUNC(CAST(CREATED as DATE)) as "issuedate",
+ TO_CHAR(CREATED,'YYYY')      as "year",
+ TO_CHAR(CREATED,'Mon')       as "month",
+ TO_CHAR(CREATED,'MM')        as "monthno",
+ TO_CHAR(CREATED,'Mon DD')    as "day",
+ TO_CHAR(CREATED,'DD')        as "dayno"
+FROM jiraissue WHERE CREATED is NOT NULL
+UNION
+SELECT DISTINCT
+ TRUNC(CAST(UPDATED as DATE)),
+ TO_CHAR(UPDATED,'YYYY'),
+ TO_CHAR(UPDATED,'Mon'),
+ TO_CHAR(UPDATED,'MM'),
+ TO_CHAR(UPDATED,'Mon DD'),
+ TO_CHAR(UPDATED,'DD')
+FROM jiraissue WHERE UPDATED is NOT NULL
+UNION
+SELECT DISTINCT
+ TRUNC(CAST(DUEDATE as DATE)),
+ TO_CHAR(DUEDATE, 'YYYY'),
+ TO_CHAR(DUEDATE, 'Mon'),
+ TO_CHAR(DUEDATE, 'MM'),
+ TO_CHAR(DUEDATE, 'Mon DD'),
+ TO_CHAR(DUEDATE, 'DD')
+FROM jiraissue WHERE DUEDATE is NOT NULL
+UNION
+SELECT DISTINCT
+ TRUNC(CAST(RESOLUTIONDATE as DATE)),
+ TO_CHAR(RESOLUTIONDATE, 'YYYY'),
+ TO_CHAR(RESOLUTIONDATE, 'Mon'),
+ TO_CHAR(RESOLUTIONDATE, 'MM'),
+ TO_CHAR(RESOLUTIONDATE, 'Mon DD'),
+ TO_CHAR(RESOLUTIONDATE, 'DD')
+FROM jiraissue WHERE RESOLUTIONDATE is NOT NULL]]></SQL>
+                <SQL dialect='mssql'><![CDATA[SELECT DISTINCT
+ CAST(CREATED as DATE)             as "issuedate",
+ CONVERT(VARCHAR(4), CREATED, 102) as "year",
+ CONVERT(VARCHAR(3), CREATED, 7)   as "month",
+ CONVERT(VARCHAR(2), CREATED, 1)   as "monthno",
+ CONVERT(VARCHAR(6), CREATED, 7)   as "day",
+ CONVERT(VARCHAR(2), CREATED, 4)   as "dayno"
+FROM jira.jiraissue WHERE CREATED is NOT NULL
+UNION
+SELECT DISTINCT
+ CAST(UPDATED as DATE),
+ CONVERT(VARCHAR(4), UPDATED, 102),
+ CONVERT(VARCHAR(3), UPDATED, 7),
+ CONVERT(VARCHAR(2), UPDATED, 1),
+ CONVERT(VARCHAR(6), UPDATED, 7),
+ CONVERT(VARCHAR(2), UPDATED, 4)
+FROM jira.jiraissue WHERE UPDATED is NOT NULL
+UNION
+SELECT DISTINCT
+ CAST(DUEDATE as DATE),
+ CONVERT(VARCHAR(4), DUEDATE, 102),
+ CONVERT(VARCHAR(3), DUEDATE, 7),
+ CONVERT(VARCHAR(2), DUEDATE, 1),
+ CONVERT(VARCHAR(6), DUEDATE, 7),
+ CONVERT(VARCHAR(2), DUEDATE, 4)
+FROM jira.jiraissue WHERE DUEDATE is NOT NULL
+UNION
+SELECT DISTINCT
+ CAST(RESOLUTIONDATE as DATE),
+ CONVERT(VARCHAR(4), RESOLUTIONDATE, 102),
+ CONVERT(VARCHAR(3), RESOLUTIONDATE, 7),
+ CONVERT(VARCHAR(2), RESOLUTIONDATE, 1),
+ CONVERT(VARCHAR(6), RESOLUTIONDATE, 7),
+ CONVERT(VARCHAR(2), RESOLUTIONDATE, 4)
+FROM jira.jiraissue WHERE RESOLUTIONDATE is NOT NULL]]></SQL>
+            </ExpressionView>
+        </Query>
+
+        <Query alias='LOGDATES' keyColumn='logdate'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT DISTINCT
+ CAST(STARTDATE as DATE)     as "logdate",
+ TO_CHAR(STARTDATE,'YYYY')   as "year",
+ TO_CHAR(STARTDATE,'Mon')    as "month",
+ TO_CHAR(STARTDATE,'MM')     as "monthno",
+ TO_CHAR(STARTDATE,'Mon DD') as "day",
+ TO_CHAR(STARTDATE,'DD')     as "dayno"
+FROM worklog
+UNION
+SELECT DISTINCT
+ CAST(CREATED as DATE),
+ TO_CHAR(CREATED,'YYYY'),
+ TO_CHAR(CREATED,'Mon'),
+ TO_CHAR(CREATED,'MM'),
+ TO_CHAR(CREATED,'Mon DD'),
+ TO_CHAR(CREATED,'DD')
+FROM worklog]]></SQL>
+                <SQL dialect='mysql'><![CDATA[SELECT DISTINCT
+ DATE(STARTDATE)                as "logdate",
+ DATE_FORMAT(STARTDATE,'%Y')    as "year",
+ DATE_FORMAT(STARTDATE,'%b')    as "month",
+ DATE_FORMAT(STARTDATE,'%c')    as "monthno",
+ DATE_FORMAT(STARTDATE,'%b %d') as "day",
+ DATE_FORMAT(STARTDATE,'%d')    as "dayno"
+FROM worklog
+UNION
+SELECT DISTINCT
+ DATE(CREATED),
+ YEAR(CREATED),
+ DATE_FORMAT(CREATED,'%b'),
+ DATE_FORMAT(CREATED,'%c'),
+ DATE_FORMAT(CREATED,'%b %d'),
+ DATE_FORMAT(CREATED,'%d')
+FROM worklog
+    ]]></SQL>
+                <SQL dialect='oracle'><![CDATA[SELECT DISTINCT
+ TRUNC(CAST(STARTDATE as DATE)) as "logdate",
+ TO_CHAR(STARTDATE,'YYYY')      as "year",
+ TO_CHAR(STARTDATE,'Mon')       as "month",
+ TO_CHAR(STARTDATE,'MM')        as "monthno",
+ TO_CHAR(STARTDATE,'Mon DD')    as "day",
+ TO_CHAR(STARTDATE,'DD')        as "dayno"
+FROM worklog
+UNION
+SELECT DISTINCT
+ TRUNC(CAST(CREATED as DATE)),
+ TO_CHAR(CREATED,'YYYY'),
+ TO_CHAR(CREATED,'Mon'),
+ TO_CHAR(CREATED,'MM'),
+ TO_CHAR(CREATED,'Mon DD'),
+ TO_CHAR(CREATED,'DD')
+FROM worklog]]></SQL>
+                <SQL dialect='mssql'><![CDATA[SELECT DISTINCT
+ CAST(STARTDATE as DATE)             as "logdate",
+ CONVERT(VARCHAR(4), STARTDATE, 102) as "year",
+ CONVERT(VARCHAR(3), STARTDATE, 7)   as "month",
+ CONVERT(VARCHAR(2), STARTDATE, 1)   as "monthno",
+ CONVERT(VARCHAR(6), STARTDATE, 7)   as "day",
+ CONVERT(VARCHAR(2), STARTDATE, 4)   as "dayno"
+FROM jira.worklog WHERE STARTDATE is NOT NULL
+UNION
+SELECT DISTINCT
+ CAST(CREATED as DATE),
+ CONVERT(VARCHAR(4), CREATED, 102),
+ CONVERT(VARCHAR(3), CREATED, 7),
+ CONVERT(VARCHAR(2), CREATED, 1),
+ CONVERT(VARCHAR(6), CREATED, 7),
+ CONVERT(VARCHAR(2), CREATED, 4)
+FROM jira.worklog WHERE CREATED is NOT NULL
+    ]]></SQL>
+            </ExpressionView>
+        </Query>
+
+
+        <Query alias='WORKLOG'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT
+ jiraissue.ID                                  as "id",
+ concat(project.pkey, '-', jiraissue.issuenum) as "issuekey",
+ jiraissue.PROJECT                             as "projectid",
+ COALESCE(jiraissue.issuetype,   '-1')         as "typeid",
+ COALESCE(jiraissue.PRIORITY,    '-1')         as "priorityid",
+ COALESCE(jiraissue.issuestatus, '-1')         as "statusid",
+ COALESCE(jiraissue.RESOLUTION,  '-1')         as "resolutionid",
+ worklog.AUTHOR                                as "author",
+ CAST(worklog.CREATED as DATE)                 as "created",
+ CAST(worklog.STARTDATE as DATE)               as "started",
+ worklog.timeworked / 3600                     as "timeworked"
+FROM
+ jiraissue
+INNER JOIN project ON jiraissue.PROJECT = project.ID
+INNER JOIN worklog ON jiraissue.ID = worklog.issueid]]></SQL>
+                <SQL dialect='oracle'><![CDATA[SELECT
+ jiraissue.ID                                  as "id",
+ project.pkey || '-' || jiraissue.issuenum     as "issuekey",
+ jiraissue.PROJECT                             as "projectid",
+ COALESCE(jiraissue.issuetype,   '-1')         as "typeid",
+ COALESCE(jiraissue.PRIORITY,    '-1')         as "priorityid",
+ COALESCE(jiraissue.issuestatus, '-1')         as "statusid",
+ COALESCE(jiraissue.RESOLUTION,  '-1')         as "resolutionid",
+ worklog.AUTHOR                                as "author",
+ CAST(worklog.CREATED as DATE)                 as "created",
+ CAST(worklog.STARTDATE as DATE)               as "started",
+ worklog.timeworked / 3600                     as "timeworked"
+FROM
+ jiraissue
+INNER JOIN project ON jiraissue.PROJECT = project.ID
+INNER JOIN worklog ON jiraissue.ID = worklog.issueid]]></SQL>
+                <SQL dialect='mssql'><![CDATA[SELECT
+ jiraissue.ID                                  as "id",
+ CONCAT(project.pkey, '-', jiraissue.issuenum) as "issuekey",
+ jiraissue.PROJECT                             as "projectid",
+ COALESCE(jiraissue.issuetype,   '-1')         as "typeid",
+ COALESCE(jiraissue.PRIORITY,    '-1')         as "priorityid",
+ COALESCE(jiraissue.issuestatus, '-1')         as "statusid",
+ COALESCE(jiraissue.RESOLUTION,  '-1')         as "resolutionid",
+ worklog.AUTHOR                                as "author",
+ CAST(worklog.CREATED as DATE)                 as "created",
+ CAST(worklog.STARTDATE as DATE)               as "started",
+ worklog.timeworked / 3600                     as "timeworked"
+FROM
+ jira.jiraissue
+INNER JOIN jira.project ON jiraissue.PROJECT = project.ID
+INNER JOIN jira.worklog ON jiraissue.ID = worklog.issueid
+    ]]></SQL>
+            </ExpressionView>
+        </Query>
+
+
+        <Query alias='ISSUELABELS' keyColumn='id'>
+            <ExpressionView>
+                <SQL dialect='generic'><![CDATA[SELECT
+ jiraissue.ID                                  as "id",
+ concat(project.pkey, '-', jiraissue.issuenum) as "issuekey",
+ jiraissue.PROJECT                             as "projectid",
+ COALESCE(label.LABEL, 'No Label')             as "label"
+FROM
+ jiraissue
+INNER JOIN project ON jiraissue.PROJECT = project.ID
+LEFT OUTER JOIN label ON label.ISSUE = jiraissue.ID
+    ]]></SQL>
+                <SQL dialect='oracle'><![CDATA[SELECT
+ jiraissue.ID                                  as "id",
+ project.pkey || '-' || jiraissue.issuenum     as "issuekey",
+ jiraissue.PROJECT                             as "projectid",
+ COALESCE(label.LABEL, 'No Label')             as "label"
+FROM
+ jiraissue
+INNER JOIN project ON jiraissue.PROJECT = project.ID
+LEFT OUTER JOIN label ON label.ISSUE = jiraissue.ID]]></SQL>
+                <SQL dialect='mssql'><![CDATA[SELECT
+ jiraissue.ID                                  as "id",
+ CONCAT(project.pkey, '-', jiraissue.issuenum) as "issuekey",
+ jiraissue.PROJECT                             as "projectid",
+ COALESCE(label.LABEL, 'No Label')             as "label"
+FROM
+ jira.jiraissue
+INNER JOIN jira.project ON jiraissue.PROJECT = project.ID
+LEFT OUTER JOIN jira.label ON label.ISSUE = jiraissue.ID
+    ]]></SQL>
+            </ExpressionView>
+        </Query>
+    </PhysicalSchema>
+
+
+    <Dimension name='LogDate' table='LOGDATES' type='TIME' key='Day'>
+        <Attributes>
+            <Attribute name='Year'  hasHierarchy='false' keyColumn='year' levelType='TimeYears' />
+            <Attribute name='Month' hasHierarchy='false' nameColumn='month' levelType='TimeMonths' orderByColumn='monthno'>
+                <Key>
+                    <Column name='year' />
+                    <Column name='monthno' />
+                </Key>
+            </Attribute>
+            <Attribute name='Day'   hasHierarchy='false' keyColumn='logdate' nameColumn='day' levelType='TimeDays' orderByColumn='dayno'/>
+        </Attributes>
+        <Hierarchies>
+            <Hierarchy name='Date' allLevelName='(All Dates)'>
+                <Level attribute='Year' />
+                <Level attribute='Month' />
+                <Level attribute='Day' />
+            </Hierarchy>
+        </Hierarchies>
+    </Dimension>
+
+
+    <Dimension name='IssueDate' table='ISSUEDATES' type='TIME' key='Day'>
+        <Attributes>
+            <Attribute name='Year'  hasHierarchy='false' keyColumn='year'   levelType='TimeYears' />
+            <Attribute name='Month' hasHierarchy='false' nameColumn='month' levelType='TimeMonths' orderByColumn='monthno'>
+                <Key>
+                    <Column name='year' />
+                    <Column name='monthno' />
+                </Key>
+            </Attribute>
+            <Attribute name='Day'    hasHierarchy='false' keyColumn='issuedate' nameColumn='day' levelType='TimeDays' orderByColumn='dayno'/>
+        </Attributes>
+        <Hierarchies>
+            <Hierarchy name='Date' allLevelName='(All Dates)'>
+                <Level attribute='Year'  />
+                <Level attribute='Month' />
+                <Level attribute='Day'   />
+            </Hierarchy>
+        </Hierarchies>
+    </Dimension>
+
+
+    <Dimension name='User' table='USERS' key='User'>
+        <Attributes>
+            <Attribute name='User' keyColumn='username' nameColumn='displayname' />
+        </Attributes>
+    </Dimension>
+
+
+    <Dimension name='Project' table='PROJECTS' key='Project Name'>
+        <Attributes>
+            <Attribute name='Project Name' keyColumn='id' nameColumn='name' />
+        </Attributes>
+    </Dimension>
+
+
+    <Dimension name='Priority' table='ISSUEPRIORITIES' key='Priority'>
+        <Attributes>
+            <Attribute name='Priority' keyColumn='id' nameColumn='name' />
+        </Attributes>
+    </Dimension>
+
+
+    <Dimension name='Type' table='ISSUETYPES' key='Issue Type'>
+        <Attributes>
+            <Attribute name='Issue Type' keyColumn='id' nameColumn='name' />
+        </Attributes>
+    </Dimension>
+
+
+    <Dimension name='Status' table='ISSUESTATUSES' key='Issue Status'>
+        <Attributes>
+            <Attribute name='Issue Status' keyColumn='id' nameColumn='name' />
+        </Attributes>
+    </Dimension>
+
+
+    <Dimension name='Resolution' table='ISSUERESOLUTIONS' key='Issue Resolution'>
+        <Attributes>
+            <Attribute name='Issue Resolution' keyColumn='id'  nameColumn='name' />
+        </Attributes>
+    </Dimension>
+
+
+    <Dimension name='Issue' table='ISSUES' key='Issue ID'>
+        <Attributes>
+            <Attribute name='Issue ID'    keyColumn='id'         hasHierarchy='false' />
+            <Attribute name='Project Key' keyColumn='projectkey' hasHierarchy='false' />
+            <Attribute name='Issue Key'   keyColumn='issuekey'   hasHierarchy='false' orderByColumn='issuenum' />
+        </Attributes>
+        <Hierarchies>
+            <Hierarchy name='Issue'>
+                <Level attribute='Project Key' />
+                <Level attribute='Issue Key' />
+            </Hierarchy>
+        </Hierarchies>
+    </Dimension>
+
+
+    <Dimension name='Issue Label' key='ID' table='ISSUELABELS'>
+        <Attributes>
+            <Attribute name='ID'        keyColumn='id'       hasHierarchy='false' />
+            <Attribute name='Issue Key' keyColumn='issuekey' hierarchyAllLevelName='(All Issues)' />
+            <Attribute name='Label'     keyColumn='label'    hierarchyAllLevelName='(All Labels)' />
+        </Attributes>
+    </Dimension>
+
+
+    <Cube name='Issues'>
+        <Dimensions>
+            <Dimension                 source='Project'    />
+            <Dimension                 source='Issue'      />
+
+            <Dimension                 source='Type'       />
+            <Dimension                 source='Status'     />
+            <Dimension                 source='Priority'   />
+            <Dimension                 source='Resolution' />
+
+            <Dimension name='Assignee' source='User'       />
+            <Dimension name='Reporter' source='User'       />
+
+            <Dimension name='Updated'  source='IssueDate'  />
+            <Dimension name='Created'  source='IssueDate'  />
+            <Dimension name='Due'      source='IssueDate'  />
+            <Dimension name='Resolved' source='IssueDate'  />
+        </Dimensions>
+        <MeasureGroups>
+            <MeasureGroup table='ISSUES'>
+                <Measures>
+                    <Measure name='Issue count'    column='id'        aggregator='distinct-count' />
+                    <Measure name='Estimated Time' column='estimated' aggregator='sum'     />
+                    <Measure name='Remainig Time'  column='remaining' aggregator='sum'     />
+                    <Measure name='Logged Time'    column='timespent' aggregator='sum'     />
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Project'    foreignKeyColumn='projectid'    />
+                    <ForeignKeyLink dimension='Issue'      foreignKeyColumn='id'           />
+
+                    <ForeignKeyLink dimension='Type'       foreignKeyColumn='typeid'       />
+                    <ForeignKeyLink dimension='Priority'   foreignKeyColumn='priorityid'   />
+                    <ForeignKeyLink dimension='Status'     foreignKeyColumn='statusid'     />
+                    <ForeignKeyLink dimension='Resolution' foreignKeyColumn='resolutionid' />
+
+                    <ForeignKeyLink dimension='Assignee'   foreignKeyColumn='assignee'     />
+                    <ForeignKeyLink dimension='Reporter'   foreignKeyColumn='reporter'     />
+
+                    <ForeignKeyLink dimension='Created'    foreignKeyColumn='created'      />
+                    <ForeignKeyLink dimension='Updated'    foreignKeyColumn='updated'      />
+                    <ForeignKeyLink dimension='Due'        foreignKeyColumn='due'          />
+                    <ForeignKeyLink dimension='Resolved'   foreignKeyColumn='resolved'     />
+                </DimensionLinks>
+            </MeasureGroup>
+        </MeasureGroups>
+    </Cube>
+
+
+    <Cube name='Worklog'>
+        <Dimensions>
+            <Dimension                source='Project'    />
+            <Dimension                source='Issue'      />
+
+            <Dimension                source='Type'       />
+            <Dimension                source='Priority'   />
+            <Dimension                source='Status'     />
+            <Dimension                source='Resolution' />
+
+            <Dimension name='Worker'  source='User'       />
+
+            <Dimension name='Created' source='LogDate'    />
+            <Dimension name='Start'   source='LogDate'    />
+        </Dimensions>
+        <MeasureGroups>
+            <MeasureGroup table='WORKLOG'>
+                <Measures>
+                    <Measure name='Worklogs count' column='id'         aggregator='count'  />
+                    <Measure name='Time Spent'     column='timeworked' aggregator='sum'    />
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Project'    foreignKeyColumn='projectid'    />
+                    <ForeignKeyLink dimension='Issue'      foreignKeyColumn='id'           />
+
+                    <ForeignKeyLink dimension='Type'       foreignKeyColumn='typeid'       />
+                    <ForeignKeyLink dimension='Priority'   foreignKeyColumn='priorityid'   />
+                    <ForeignKeyLink dimension='Status'     foreignKeyColumn='statusid'     />
+                    <ForeignKeyLink dimension='Resolution' foreignKeyColumn='resolutionid' />
+
+                    <ForeignKeyLink dimension='Worker'     foreignKeyColumn='author'       />
+                    <ForeignKeyLink dimension='Created'    foreignKeyColumn='created'      />
+                    <ForeignKeyLink dimension='Start'      foreignKeyColumn='started'      />
+                </DimensionLinks>
+            </MeasureGroup>
+        </MeasureGroups>
+    </Cube>
+
+
+    <Cube name='Labels'>
+        <Dimensions>
+            <Dimension              source='Project'     />
+            <Dimension name='Issue' source='Issue Label' />
+        </Dimensions>
+        <MeasureGroups>
+            <MeasureGroup table='ISSUELABELS'>
+                <Measures>
+                    <Measure name='Issue count' column='id'    aggregator='distinct-count' />
+                    <Measure name='Label count' column='label' aggregator='distinct-count' />
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Project' foreignKeyColumn='projectid'       />
+                    <FactLink dimension='Issue'                                            />
+                </DimensionLinks>
+            </MeasureGroup>
+        </MeasureGroups>
+    </Cube>
+</Schema>

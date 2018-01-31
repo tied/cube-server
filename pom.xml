@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mesilat</groupId>
+    <artifactId>cube</artifactId>
+    <version>1.0.0</version>
+
+    <organization>
+        <name>Mesilat Limited</name>
+        <url>http://www.mesilat.com/</url>
+    </organization>
+
+    <name>Cube for JIRA</name>
+    <description>This is XMLA Cube for Atlassian JIRA</description>
+    <packaging>atlassian-plugin</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.atlassian.templaterenderer</groupId>
+            <artifactId>atlassian-template-renderer-api</artifactId>
+            <scope>provided</scope>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.jira</groupId>
+            <artifactId>jira-api</artifactId>
+            <version>${jira.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.jira</groupId>
+            <artifactId>jira-core</artifactId>
+            <version>${jira.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugins.rest</groupId>
+            <artifactId>atlassian-rest-module</artifactId>
+            <version>3.0.14</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-annotation</artifactId>
+            <version>${atlassian.spring.scanner.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-runtime</artifactId>
+            <version>${atlassian.spring.scanner.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.activeobjects</groupId>
+            <artifactId>activeobjects-plugin</artifactId>
+            <version>${ao.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cube-library</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-jira-plugin</artifactId>
+                <version>${amps.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <productVersion>${jira.version}</productVersion>
+                    <productDataVersion>${jira.version}</productDataVersion>
+                    <enableQuickReload>true</enableQuickReload>
+                    <enableFastdev>false</enableFastdev>
+
+                    <!-- See here for an explanation of default instructions: -->
+                    <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
+                    <instructions>
+                        <Export-Package>
+                            com.mesilat.cube
+                        </Export-Package>
+
+                        <!-- Add package import here -->
+                        <Import-Package>
+                            sun.*;resolution:="optional",
+                            org.apache.*;resolution:="optional",
+                            org.springframework.osgi.*;resolution:="optional",
+                            org.eclipse.gemini.blueprint.*;resolution:="optional",
+                            *
+                        </Import-Package>
+
+                        <!-- Ensure plugin is spring powered -->
+                        <Spring-Context>*</Spring-Context>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.atlassian.plugin</groupId>
+                <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+                <version>${atlassian.spring.scanner.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>atlassian-spring-scanner</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scannedDependencies>
+                        <dependency>
+                            <groupId>com.atlassian.plugin</groupId>
+                            <artifactId>atlassian-spring-scanner-external-jar</artifactId>
+                        </dependency>
+                    </scannedDependencies>
+                    <verbose>false</verbose>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <jira.version>7.2.2</jira.version>
+        <amps.version>6.2.11</amps.version>
+        <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
+        <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml and the key to generate bundle. -->
+        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+
+<!--
+        <olap4j.version>1.2.0</olap4j.version>
+        <commons-vfs2.version>2.1</commons-vfs2.version>
+        <eigenbase-properties.version>1.1.2</eigenbase-properties.version>
+        <commons-io.version>1.4</commons-io.version>
+        <mysql-connector-java.version>5.1.39</mysql-connector-java.version>
+        <olap4j-tck.version>1.0.1.539</olap4j-tck.version>
+        <eigenbase-resgen.version>1.3.1</eigenbase-resgen.version>
+        <junit.version>3.8.1</junit.version>
+        <maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
+        <commons-pool.version>1.2</commons-pool.version>
+        <validation-api.version>1.0.0.GA</validation-api.version>
+        <xercesImpl.version>2.9.1</xercesImpl.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
+        <commons-math.version>1.1</commons-math.version>
+        <olap4j-xmla.version>1.2.0</olap4j-xmla.version>
+        <jsp-api.version>2.0</jsp-api.version>
+        <mockito-all.version>1.9.5</mockito-all.version>
+        <commons-dbcp.version>1.2.1</commons-dbcp.version>
+        <olap4j-xmlaserver.version>1.2.0</olap4j-xmlaserver.version>
+        <dom4j.version>1.6.1</dom4j.version>
+        <dependency.postgres.revision>42.1.1</dependency.postgres.revision>
+        <commons-logging.version>1.1.1</commons-logging.version>
+        <eigenbase-xom.version>1.3.5</eigenbase-xom.version>
+        <servlet-api.version>2.4</servlet-api.version>
+        <commons-lang.version>2.4</commons-lang.version>
+        <xmlunit.version>1.1</xmlunit.version>
+        <slf4j.version>1.6.6</slf4j.version>
+-->
+        <ao.version>1.1.5</ao.version>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <!--xml-apis.version>2.0.2</xml-apis.version-->
+    </properties>
+
+</project>

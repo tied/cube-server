@@ -1,0 +1,40 @@
+{namespace Mesilat.Cube.Templates}
+
+/**
+* Edit properties dialog
+* @param properties
+*/
+{template .propertiesDialog}
+<table>
+<thead>
+<tr><th>Name</th><th colspan="2">Value</th></tr>
+</thead>
+
+<tbody>
+    {foreach $key in keys($properties)}
+        {call .propertyLine}
+            {param name: $key/}
+            {param value: $properties[$key]/}
+        {/call}
+    {/foreach}
+</tbody>
+</table>
+
+<div>
+<button class="aui-button aui-button-compact com-mesilat-mondrian-property-addrow"><span class="aui-icon aui-icon-small aui-iconfont-table-row-down"></span>Add Row</button>
+<button class="aui-button aui-button-compact com-mesilat-mondrian-property-save"><span class="aui-icon aui-icon-small aui-iconfont-approve"></span>Save</button>
+</div>
+{/template}
+
+/**
+* Property line
+* @param name
+* @param value
+*/
+{template .propertyLine}
+<tr>
+    <td><input class="com-mesilat-mondrian-property-name" value="{$name}"/></td>
+    <td><input class="com-mesilat-mondrian-property-value" value="{$value}"/></td>
+    <td><span class="aui-icon aui-icon-small aui-iconfont-table-row-remove com-mesilat-mondrian-property-remove"></span</td>
+</tr>
+{/template}

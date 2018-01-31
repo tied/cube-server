@@ -1,0 +1,52 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+        <param name="configure.url">/plugins/servlet/xmla</param>
+    </plugin-info>
+
+    <resource type="i18n" name="i18n" location="/i18n/cube"/>
+    
+    <web-resource key="cube-resources" name="cube web resources">
+        <transformation extension="soy">
+            <transformer key="soyTransformer"/>
+        </transformation>
+        <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
+
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        
+        <resource type="download" name="images/"                    location="/images"/>
+        <resource type="download" name="cube.css"                   location="/css/cube.css"/>
+        <resource type="download" name="config.js"                  location="/js/config.js"/>
+        <resource type="download" name="mondrian-properties.soy.js" location="/templates/mondrian-properties.soy"/>
+
+        <context>com.mesilat.cube</context>
+        <context>atl.admin</context>
+        <context>upm</context>
+    </web-resource>
+
+    <rest key="rest" path="/cube" version="1.0" name="REST API">
+        <description>Provides REST API</description>
+    </rest>
+
+    <servlet key="xmla" class="com.mesilat.cube.CubeServlet" name="XMLA Servlet">
+        <description>Provides JIRA OLAP Cube</description>
+        <url-pattern>/xmla</url-pattern>
+    </servlet>
+
+    <ao key="ao-module" name="Active Objects">
+        <entity>com.mesilat.cube.MondrianProperty</entity>
+        <entity>com.mesilat.cube.CatalogData</entity>
+    </ao>
+
+    <web-item key="jira-menu-item" name="Cube Admin" section="system.admin/globalsettings" weight="10" application="jira">
+        <description key="com.mesilat.cube.desc"></description> 
+        <label key="com.mesilat.cube.label" /> 
+        <link linkId="com-mesilat-cube-link">/plugins/servlet/xmla</link> 
+    </web-item> 
+</atlassian-plugin>
